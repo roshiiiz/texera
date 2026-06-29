@@ -801,7 +801,7 @@ class WorkflowResourceSpec
       sessionUser1,
       SearchQueryParams(resourceType = "workflow", orderBy = "ExecutionTimeDesc")
     )
-    
+
     // Verify it returns 3 results
     assert(resources.results.length == 3)
   }
