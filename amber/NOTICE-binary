@@ -1701,16 +1701,6 @@ This product includes software developed at
 The Apache Software Foundation (http://www.apache.org/).
 
 --------------------------------------------------------------------------------
-org.apache.commons.commons-jcs3-core
---------------------------------------------------------------------------------
-
-Apache Commons JCS :: Core
-Copyright 2002-2023 The Apache Software Foundation
-
-This product includes software developed at
-The Apache Software Foundation (http://www.apache.org/).
-
---------------------------------------------------------------------------------
 org.apache.commons.commons-text
 --------------------------------------------------------------------------------
 
@@ -2133,6 +2123,16 @@ org.apache.arrow.arrow-memory-netty
 Arrow Memory - Netty
 Copyright 2026 The Apache Software Foundation
 
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+--------------------------------------------------------------------------------
+org.apache.commons.commons-jcs3-core
+--------------------------------------------------------------------------------
+
+Apache Commons JCS :: Core
+Copyright 2002-2024 The Apache Software Foundation
 
 This product includes software developed at
 The Apache Software Foundation (http://www.apache.org/).
