@@ -270,18 +270,26 @@ export class UserComputingUnitComponent implements OnInit {
     this.resetJvmMemorySlider();
   }
 
-  onJvmMemorySliderChange(value: number): void {
-    // Ensure the value is one of the valid steps
-    const validStep = findNearestValidStep(value, this.jvmMemorySteps);
-    this.jvmMemorySliderValue = validStep;
-    this.selectedJvmMemorySize = `${validStep}G`;
+  onJvmMemorySliderChange(index: number): void {
+    // The value is now the index in the steps array
+    const validStep = this.jvmMemorySteps[index];
+    if (validStep !== undefined) {
+      this.jvmMemorySliderValue = index;
+      this.selectedJvmMemorySize = `${validStep}G`;
+    }
   }
 
   isMaxJvmMemorySelected(): boolean {
     // Only show warning for larger memory sizes (>=4GB) where the slider is shown
     // AND when the maximum value is selected
-    return this.showJvmMemorySlider && this.jvmMemorySliderValue === this.jvmMemoryMax && this.jvmMemoryMax >= 4;
+    return this.showJvmMemorySlider && this.jvmMemorySliderValue === this.jvmMemoryMax && this.jvmMemorySteps[this.jvmMemoryMax] >= 4;
   }
+
+  jvmMemoryTipFormatter = (index: number): string => {
+    return this.jvmMemorySteps && this.jvmMemorySteps[index] !== undefined 
+      ? `${this.jvmMemorySteps[index]}G` 
+      : '';
+  };
 
   // Completely reset the JVM memory slider based on the selected CU memory
   resetJvmMemorySlider(): void {
@@ -297,7 +305,7 @@ export class UserComputingUnitComponent implements OnInit {
 
   onMemorySelectionChange(): void {
     // Store current JVM memory value for potential reuse
-    const previousJvmMemory = this.jvmMemorySliderValue;
+    const previousJvmMemoryValue = this.jvmMemorySteps[this.jvmMemorySliderValue];
 
     // Reset slider configuration based on the new memory selection
     this.resetJvmMemorySlider();
@@ -311,12 +319,12 @@ export class UserComputingUnitComponent implements OnInit {
     // Only try to preserve previous value for larger memory sizes where slider is shown
     if (
       cuMemoryInGb > 3 &&
-      previousJvmMemory >= 2 &&
-      previousJvmMemory <= this.jvmMemoryMax &&
-      this.jvmMemorySteps.includes(previousJvmMemory)
+      previousJvmMemoryValue >= 2 &&
+      this.jvmMemorySteps.includes(previousJvmMemoryValue)
     ) {
-      this.jvmMemorySliderValue = previousJvmMemory;
-      this.selectedJvmMemorySize = `${previousJvmMemory}G`;
+      const index = this.jvmMemorySteps.indexOf(previousJvmMemoryValue);
+      this.jvmMemorySliderValue = index;
+      this.selectedJvmMemorySize = `${previousJvmMemoryValue}G`;
     }
   }
 

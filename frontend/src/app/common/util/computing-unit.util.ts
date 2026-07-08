@@ -285,8 +285,8 @@ function buildJvmMemorySteps(maxGb: number, start: number): number[] {
 }
 
 function buildJvmMemoryMarks(steps: number[]): Record<number, string> {
-  return steps.reduce<Record<number, string>>((marks, step) => {
-    marks[step] = `${step}G`;
+  return steps.reduce<Record<number, string>>((marks, step, index) => {
+    marks[index] = `${step}G`;
     return marks;
   }, {});
 }
@@ -299,11 +299,11 @@ export function getJvmMemorySliderConfig(selectedMemory: string): JvmMemorySlide
     const steps = buildJvmMemorySteps(cuMemoryInGb, 1);
 
     return {
-      jvmMemoryMax: cuMemoryInGb,
+      jvmMemoryMax: steps.length - 1,
       showJvmMemorySlider: false,
       jvmMemorySteps: steps,
       jvmMemoryMarks: buildJvmMemoryMarks(steps),
-      jvmMemorySliderValue: defaultValue,
+      jvmMemorySliderValue: steps.indexOf(defaultValue),
       selectedJvmMemorySize: `${defaultValue}G`,
     };
   }
@@ -311,11 +311,11 @@ export function getJvmMemorySliderConfig(selectedMemory: string): JvmMemorySlide
   const steps = buildJvmMemorySteps(cuMemoryInGb, 2);
 
   return {
-    jvmMemoryMax: cuMemoryInGb,
+    jvmMemoryMax: steps.length - 1,
     showJvmMemorySlider: true,
     jvmMemorySteps: steps,
     jvmMemoryMarks: buildJvmMemoryMarks(steps),
-    jvmMemorySliderValue: 2,
+    jvmMemorySliderValue: steps.indexOf(2) !== -1 ? steps.indexOf(2) : 0,
     selectedJvmMemorySize: "2G",
   };
 }
