@@ -187,15 +187,7 @@ export function memoryPercentage(usage: string, limit: string): number {
   return Math.min(percentage, 100);
 }
 
-export function findNearestValidStep(value: number, jvmMemorySteps: number[]): number {
-  if (jvmMemorySteps.length === 0) return 1;
-  if (jvmMemorySteps.includes(value)) return value;
 
-  // Find the closest step value
-  return jvmMemorySteps.reduce((prev, curr) => {
-    return Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev;
-  });
-}
 
 export function validateName(trimmedName: string): string | null {
   if (!trimmedName) return "Computing unit name cannot be empty";
@@ -327,6 +319,10 @@ interface JvmMemorySliderConfig {
   jvmMemoryMarks: Record<number, string>;
   jvmMemorySliderValue: number;
   selectedJvmMemorySize: string;
+}
+
+export function buildLocalComputingUnitUri(location: { protocol: string; hostname: string; port: string }): string {
+  return `${location.protocol}//${location.hostname}${location.port ? `:${location.port}` : ""}/wsapi`;
 }
 
 export const unitTypeMessageTemplate = {
