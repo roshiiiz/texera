@@ -301,13 +301,14 @@ export function getJvmMemorySliderConfig(selectedMemory: string): JvmMemorySlide
   }
 
   const steps = buildJvmMemorySteps(cuMemoryInGb, 2);
+  const defaultIndex = steps.indexOf(2);
 
   return {
     jvmMemoryMax: steps.length - 1,
     showJvmMemorySlider: true,
     jvmMemorySteps: steps,
     jvmMemoryMarks: buildJvmMemoryMarks(steps),
-    jvmMemorySliderValue: steps.indexOf(2) !== -1 ? steps.indexOf(2) : 0,
+    jvmMemorySliderValue: defaultIndex !== -1 ? defaultIndex : 0,
     selectedJvmMemorySize: "2G",
   };
 }
