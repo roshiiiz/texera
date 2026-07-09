@@ -207,6 +207,6 @@ class WorkflowCompilerSpec extends AnyFlatSpec {
     val ex = intercept[RuntimeException] {
       new WorkflowCompiler(ctx).compile(pojo(List(orphanCsv), List.empty))
     }
-    assert(ex.getMessage == "no input file name")
+    assert(ex.getMessage.contains("No file selected"))
   }
 }
