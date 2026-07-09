@@ -111,9 +111,7 @@ export class ComputingUnitCreateModalComponent implements OnInit, OnChanges {
   showJvmMemorySlider: boolean = false; // Whether to show the slider
 
   jvmMemoryTipFormatter = (index: number): string => {
-    return this.jvmMemorySteps && this.jvmMemorySteps[index] !== undefined
-      ? `${this.jvmMemorySteps[index]}G`
-      : "";
+    return this.jvmMemorySteps && this.jvmMemorySteps[index] !== undefined ? `${this.jvmMemorySteps[index]}G` : "";
   };
 
   // cpu&memory limit options from backend
@@ -297,7 +295,11 @@ export class ComputingUnitCreateModalComponent implements OnInit, OnChanges {
   isMaxJvmMemorySelected(): boolean {
     // Only show warning for larger memory sizes (>=4GB) where the slider is shown
     // AND when the maximum value is selected
-    return this.showJvmMemorySlider && this.jvmMemorySliderValue === this.jvmMemoryMax && this.jvmMemorySteps[this.jvmMemoryMax] >= 4;
+    return (
+      this.showJvmMemorySlider &&
+      this.jvmMemorySliderValue === this.jvmMemoryMax &&
+      this.jvmMemorySteps[this.jvmMemoryMax] >= 4
+    );
   }
 
   // Completely reset the JVM memory slider based on the selected CU memory
@@ -327,11 +329,7 @@ export class ComputingUnitCreateModalComponent implements OnInit, OnChanges {
     let cuMemoryInGb = memoryUnit === "Gi" ? memoryValue : memoryUnit === "Mi" ? Math.floor(memoryValue / 1024) : 1;
 
     // Only try to preserve previous value for larger memory sizes where slider is shown
-    if (
-      cuMemoryInGb > 3 &&
-      previousJvmMemoryValue >= 2 &&
-      this.jvmMemorySteps.includes(previousJvmMemoryValue)
-    ) {
+    if (cuMemoryInGb > 3 && previousJvmMemoryValue >= 2 && this.jvmMemorySteps.includes(previousJvmMemoryValue)) {
       const index = this.jvmMemorySteps.indexOf(previousJvmMemoryValue);
       this.jvmMemorySliderValue = index;
       this.selectedJvmMemorySize = `${previousJvmMemoryValue}G`;
