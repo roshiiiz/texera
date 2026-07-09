@@ -187,8 +187,6 @@ export function memoryPercentage(usage: string, limit: string): number {
   return Math.min(percentage, 100);
 }
 
-
-
 export function validateName(trimmedName: string): string | null {
   if (!trimmedName) return "Computing unit name cannot be empty";
   if (trimmedName.length > 128) return "Computing unit name cannot exceed 128 characters";
