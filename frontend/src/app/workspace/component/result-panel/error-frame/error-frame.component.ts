@@ -78,20 +78,17 @@ export class ErrorFrameComponent implements OnInit {
 
       if (key === "COMPILATION_ERROR") {
         // Strip out common Java exception class names and formatting to make it more user-friendly
-        const exceptionRegex = /^\s*(?:[a-zA-Z0-9_]+\.)+[a-zA-Z0-9_]+Exception:\s*/;
+        const exceptionRegex = /^\s*(?:(?:[a-zA-Z0-9_]+\.)*[a-zA-Z0-9_]+(?:Exception|Error)):\s*/;
         const requirementFailedRegex = /^\s*requirement failed:\s*/;
-        const genericExceptionRegex = /^\s*Exception:\s*/;
 
         if (message) {
           message = message.replace(exceptionRegex, "");
           message = message.replace(requirementFailedRegex, "");
-          message = message.replace(genericExceptionRegex, "");
         }
         
         if (details) {
           details = details.replace(exceptionRegex, "");
           details = details.replace(requirementFailedRegex, "");
-          details = details.replace(genericExceptionRegex, "");
         }
       }
 
