@@ -78,9 +78,7 @@ class CSVScanSourceOpDesc extends ScanSourceOpDesc {
   }
 
   override def sourceSchema(): Schema = {
-    if (customDelimiter.forall(_.isEmpty)) {
-      customDelimiter = Option(",")
-    }
+    val delimiterChar = customDelimiter.filter(_.nonEmpty).getOrElse(",").charAt(0)
     require(
       fileResolved(),
       "No file selected. Please select a valid .csv file from the 'File' dropdown in the right panel."
@@ -98,7 +96,7 @@ class CSVScanSourceOpDesc extends ScanSourceOpDesc {
       new InputStreamReader(stream, fileEncoding.getCharset)
 
     val csvFormat = new CsvFormat()
-    csvFormat.setDelimiter(customDelimiter.get.charAt(0))
+    csvFormat.setDelimiter(delimiterChar)
     csvFormat.setLineSeparator("\n")
     val csvSetting = new CsvParserSettings()
     csvSetting.setMaxCharsPerColumn(-1)

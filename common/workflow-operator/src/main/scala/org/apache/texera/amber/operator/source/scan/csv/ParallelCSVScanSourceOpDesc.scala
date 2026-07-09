@@ -79,9 +79,7 @@ class ParallelCSVScanSourceOpDesc extends ScanSourceOpDesc {
   }
 
   override def sourceSchema(): Schema = {
-    if (customDelimiter.forall(_.isEmpty)) {
-      customDelimiter = Option(",")
-    }
+    val delimiterChar = customDelimiter.filter(_.nonEmpty).getOrElse(",").charAt(0)
     require(
       fileResolved(),
       "No file selected. Please select a valid .csv file from the 'File' dropdown in the right panel."
@@ -96,7 +94,7 @@ class ParallelCSVScanSourceOpDesc extends ScanSourceOpDesc {
     }
     val file = DocumentFactory.openReadonlyDocument(uri).asFile()
     implicit object CustomFormat extends DefaultCSVFormat {
-      override val delimiter: Char = customDelimiter.get.charAt(0)
+      override val delimiter: Char = delimiterChar
 
     }
     var reader: CSVReader = CSVReader.open(file)(CustomFormat)

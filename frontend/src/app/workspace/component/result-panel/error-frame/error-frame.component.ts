@@ -72,11 +72,12 @@ export class ErrorFrameComponent implements OnInit {
       errorMessages = errorMessages.filter(err => err.operatorId === this.operatorId);
     }
     this.categoryToErrorMapping = errorMessages.reduce((acc, obj) => {
-      let key = obj.type.name;
+      const key = obj.type.name;
       let message = obj.message;
       let details = obj.details;
 
-      if (key === "COMPILATION_ERROR") {
+      const shouldFormat = key === "COMPILATION_ERROR" || key === "EXECUTION_FAILURE";
+      if (shouldFormat) {
         // Strip out common Java exception class names and formatting to make it more user-friendly
         const exceptionRegex = /^\s*(?:(?:[a-zA-Z0-9_]+\.)*[a-zA-Z0-9_]+(?:Exception|Error)):\s*/;
         const requirementFailedRegex = /^\s*requirement failed:\s*/;
