@@ -68,10 +68,14 @@ class JSONLScanSourceOpDesc extends ScanSourceOpDesc {
   }
 
   override def sourceSchema(): Schema = {
-    if (!fileResolved()) {
-      return null
+    require(fileResolved(), "No file selected. Please select a valid .jsonl file from the 'File' dropdown in the right panel.")
+
+    val stream = try {
+      DocumentFactory.openReadonlyDocument(new URI(fileName.get)).asInputStream()
+    } catch {
+      case _: Exception =>
+        throw new RuntimeException("The selected item is a folder, not a file. Please select an actual .jsonl file from the 'File' dropdown.")
     }
-    val stream = DocumentFactory.openReadonlyDocument(new URI(fileName.get)).asInputStream()
     val reader = new BufferedReader(new InputStreamReader(stream, fileEncoding.getCharset))
     var fieldNames = Set[String]()
 

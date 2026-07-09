@@ -78,10 +78,15 @@ class CSVScanSourceOpDesc extends ScanSourceOpDesc {
   }
 
   override def sourceSchema(): Schema = {
-    if (customDelimiter.isEmpty || !fileResolved()) {
-      return null
+    require(customDelimiter.isDefined, "Please specify a delimiter in the properties panel.")
+    require(fileResolved(), "No file selected. Please select a valid .csv file from the 'File' dropdown in the right panel.")
+
+    val stream = try {
+      DocumentFactory.openReadonlyDocument(new URI(fileName.get)).asInputStream()
+    } catch {
+      case _: Exception =>
+        throw new RuntimeException("The selected item is a folder, not a file. Please select an actual .csv file from the 'File' dropdown.")
     }
-    val stream = DocumentFactory.openReadonlyDocument(new URI(fileName.get)).asInputStream()
     val inputReader =
       new InputStreamReader(stream, fileEncoding.getCharset)
 

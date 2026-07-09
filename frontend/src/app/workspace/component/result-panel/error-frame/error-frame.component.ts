@@ -72,11 +72,41 @@ export class ErrorFrameComponent implements OnInit {
       errorMessages = errorMessages.filter(err => err.operatorId === this.operatorId);
     }
     this.categoryToErrorMapping = errorMessages.reduce((acc, obj) => {
-      const key = obj.type.name;
+      let key = obj.type.name;
+      let message = obj.message;
+      let details = obj.details;
+
+      if (key === "COMPILATION_ERROR") {
+        key = "WARNING";
+        
+        // Strip out common Java exception class names and formatting to make it more user-friendly
+        const exceptionRegex = /^\s*(?:[a-zA-Z0-9_]+\.)+[a-zA-Z0-9_]+Exception:\s*/;
+        const requirementFailedRegex = /^\s*requirement failed:\s*/;
+        const genericExceptionRegex = /^\s*Exception:\s*/;
+
+        if (message) {
+          message = message.replace(exceptionRegex, "");
+          message = message.replace(requirementFailedRegex, "");
+          message = message.replace(genericExceptionRegex, "");
+        }
+        
+        if (details) {
+          details = details.replace(exceptionRegex, "");
+          details = details.replace(requirementFailedRegex, "");
+          details = details.replace(genericExceptionRegex, "");
+        }
+      }
+
+      const formattedError: WorkflowFatalError = {
+        ...obj,
+        message: message,
+        details: details
+      };
+
       if (!acc.has(key)) {
         acc.set(key, []);
       }
-      acc.get(key)!.push(obj);
+      acc.get(key)!.push(formattedError);
       return acc;
     }, new Map<string, WorkflowFatalError[]>());
   }
