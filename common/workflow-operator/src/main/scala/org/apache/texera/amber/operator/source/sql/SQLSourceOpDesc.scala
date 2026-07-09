@@ -159,7 +159,7 @@ abstract class SQLSourceOpDesc extends SourceOperatorDescriptor {
       s"Please enter a valid username in the properties panel."
     )
     require(
-      password != null && password.trim.nonEmpty,
+      password != null,
       s"Please enter a valid password in the properties panel."
     )
 

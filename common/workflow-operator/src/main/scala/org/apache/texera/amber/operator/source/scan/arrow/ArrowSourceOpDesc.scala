@@ -94,7 +94,7 @@ class ArrowSourceOpDesc extends ScanSourceOpDesc {
         val arrowSchema: ArrowSchema = reader.getVectorSchemaRoot.getSchema
         ArrowUtils.toTexeraSchema(arrowSchema)
       }
-      .recover { case e: Throwable =>
+      .recover { case scala.util.control.NonFatal(e) =>
         throw new RuntimeException(
           "Failed to read the .arrow file. Please ensure it is a valid Arrow file.",
           e

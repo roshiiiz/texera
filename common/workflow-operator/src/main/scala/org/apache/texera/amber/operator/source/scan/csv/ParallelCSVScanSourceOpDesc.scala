@@ -79,7 +79,9 @@ class ParallelCSVScanSourceOpDesc extends ScanSourceOpDesc {
   }
 
   override def sourceSchema(): Schema = {
-    require(customDelimiter.isDefined, "Please specify a delimiter in the properties panel.")
+    if (customDelimiter.forall(_.isEmpty)) {
+      customDelimiter = Option(",")
+    }
     require(
       fileResolved(),
       "No file selected. Please select a valid .csv file from the 'File' dropdown in the right panel."

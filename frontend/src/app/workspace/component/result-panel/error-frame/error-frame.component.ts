@@ -77,7 +77,7 @@ export class ErrorFrameComponent implements OnInit {
       let details = obj.details;
 
       if (key === "COMPILATION_ERROR") {
-        key = "WARNING";
+        // key = "WARNING";
         
         // Strip out common Java exception class names and formatting to make it more user-friendly
         const exceptionRegex = /^\s*(?:[a-zA-Z0-9_]+\.)+[a-zA-Z0-9_]+Exception:\s*/;
