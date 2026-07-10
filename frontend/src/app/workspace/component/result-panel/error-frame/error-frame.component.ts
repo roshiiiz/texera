@@ -86,7 +86,7 @@ export class ErrorFrameComponent implements OnInit {
           message = message.replace(exceptionRegex, "");
           message = message.replace(requirementFailedRegex, "");
         }
-        
+
         if (details) {
           details = details.replace(exceptionRegex, "");
           details = details.replace(requirementFailedRegex, "");
@@ -96,7 +96,7 @@ export class ErrorFrameComponent implements OnInit {
       const formattedError: WorkflowFatalError = {
         ...obj,
         message: message,
-        details: details
+        details: details,
       };
 
       if (!acc.has(key)) {
