@@ -21,7 +21,7 @@ package org.apache.texera.amber.operator.source.scan.file
 
 import org.apache.commons.compress.archivers.ArchiveStreamFactory
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream
-import org.apache.commons.io.IOUtils.toByteArray
+
 import org.apache.texera.amber.core.storage.DocumentFactory
 import org.apache.texera.amber.core.tuple.AttributeTypeUtils.parseField
 import org.apache.texera.amber.core.tuple.LargeBinary
@@ -39,6 +39,33 @@ import scala.collection.mutable
 import scala.jdk.CollectionConverters.IteratorHasAsScala
 
 private[file] object FileScanUtils {
+
+  private val MAX_SAFE_SIZE = 100L * 1024L * 1024L // 100 MB
+
+  private def safeToByteArray(entry: InputStream, attributeType: FileAttributeType): Array[Byte] = {
+    val out = new ByteArrayOutputStream()
+    val buffer = new Array[Byte](8192)
+    var bytesRead = entry.read(buffer)
+    var totalBytes = 0L
+
+    while (bytesRead != -1) {
+      totalBytes += bytesRead
+      if (totalBytes > MAX_SAFE_SIZE) {
+        val largeBinaryHint = attributeType match {
+          case FileAttributeType.BINARY => "Please use 'large binary' attribute type instead."
+          case FileAttributeType.SINGLE_STRING =>
+            "Please split the file or use a chunked reading method."
+          case _ => "File is too large to fit in memory."
+        }
+        throw new RuntimeException(
+          s"File exceeds maximum safe memory size of 100MB for '${attributeType.getName}' type. $largeBinaryHint"
+        )
+      }
+      out.write(buffer, 0, bytesRead)
+      bytesRead = entry.read(buffer)
+    }
+    out.toByteArray
+  }
   def createTuplesFromFile(
       fileName: String,
       displayFileName: String,
@@ -90,7 +117,7 @@ private[file] object FileScanUtils {
             }
             fields += (attributeType match {
               case FileAttributeType.SINGLE_STRING =>
-                new String(toByteArray(entry), fileEncoding.getCharset)
+                new String(safeToByteArray(entry, attributeType), fileEncoding.getCharset)
               case FileAttributeType.LARGE_BINARY =>
                 val largeBinary = new LargeBinary()
                 val out = new LargeBinaryOutputStream(largeBinary)
@@ -105,7 +132,7 @@ private[file] object FileScanUtils {
                   out.close()
                 }
                 largeBinary
-              case _ => parseField(toByteArray(entry), attributeType.getType)
+              case _ => parseField(safeToByteArray(entry, attributeType), attributeType.getType)
             })
             TupleLike(fields.toSeq: _*)
         }
